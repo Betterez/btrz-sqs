@@ -1,0 +1,49 @@
+{
+  "name": "btrz-sqs",
+  "version": "1.0.0",
+  "description": "Betterez simple client to send messages to an AWS SQS queue with a very convenient interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test multi='xunit=test-results/xunit.xml spec=-' node_modules/istanbul-harmony/lib/cli.js cover node_modules/mocha/bin/_mocha -- --ui bdd -R mocha-multi -t 5000",
+    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Betterez/btrz-sqs.git"
+  },
+  "keywords": [
+    "AWS",
+    "SQS",
+    "Queues",
+    "Messages",
+    "io.js"
+  ],
+  "author": {
+    "name": "hgarcia",
+    "email": "hernan@dynamicprogrammer.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/Betterez/btrz-sqs/blob/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/Betterez/btrz-sqs/issues"
+  },
+  "homepage": "https://github.com/Betterez/btrz-sqs",
+  "dependencies": {
+    "aws-sdk": "^2.1.7",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "chai": "latest",
+    "chai-as-promised": "^4.1.1",
+    "istanbul-harmony": "latest",
+    "mocha": "latest",
+    "chance": "0.7.1",
+    "mocha-multi": "latest",
+    "sinon": "latest",
+    "xunit-file": "latest"
+  }
+}
