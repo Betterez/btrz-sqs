@@ -1,4 +1,4 @@
-# btrz-sqs [![Build Status](https://secure.travis-ci.org/Betterez/btrz-sqs.png?branch=master)](https://travis-ci.org/Betterez/btrz-sqs) [![NPM version](https://badge-me.herokuapp.com/api/npm/btrz-sqs.png)](http://badges.enytc.com/for/npm/btrz-sqs)
+# btrz-sqs [![Circle CI](https://circleci.com/gh/Betterez/btrz-sqs.svg?style=svg)](https://circleci.com/gh/Betterez/btrz-sqs) [![NPM version](https://badge-me.herokuapp.com/api/npm/btrz-sqs.png)](http://badges.enytc.com/for/npm/btrz-sqs)
 A simple client to send messages to an AWS SQS queue with a very convenient interface.
 
 It uses native Promises
@@ -18,11 +18,11 @@ Require and use the `Queue` object to create and send messages to a queue.
 
     let Queue = require("btrz-sqs").Queue;
     let q = new Queue(config, queueName);
-    
+
     let obj = {text: "An object to send as a message", email: "email@example.com"};
-    
+
     // This creates a message that SQS will be able to work with.
-    let msg = Queue.createMessage("theId", obj); 
+    let msg = Queue.createMessage("theId", obj);
 
     // Now we can send the message
     var promise = q.send([msg]);
@@ -38,10 +38,10 @@ Require and use the `Queue` object to create and send messages to a queue.
 
 ### Config object
 
-        
+
     config =  {
       key: process.env.AWS_KEY,
-      secret: process.env.AWS_SECRET, 
+      secret: process.env.AWS_SECRET,
       sqs: {
         dataImport: {
           queueUrl: process.env.AWS_SQS_URL,
@@ -49,7 +49,7 @@ Require and use the `Queue` object to create and send messages to a queue.
         }
       }
     };
-    
+
 
 The sqs object in the config can have multiple queues, in the constructor you indicate what queue to use given a string that is the key in the `config.sqs` object. In this case is `dataImport`
 
