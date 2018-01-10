@@ -60,6 +60,19 @@ function Queue(config, queueName) {
     });
 }
 
+Queue.prototype.get = function () {
+  let self = this;
+  function resolver(resolve, reject) {
+    self.sqs.receiveMessage({ QueueUrl: self.queueConfig.queueUrl }, (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    })
+  }
+  return new Promise(resolver);
+};
+
 Queue.prototype.send = function(messages) {
   let self = this;
 
