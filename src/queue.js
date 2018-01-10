@@ -1,7 +1,6 @@
 "use strict";
-let BATCH_SIZE = 10;
-let AWS = require("aws-sdk");
-let _ = require("lodash");
+const BATCH_SIZE = 10,
+  AWS = require("aws-sdk");
 
 function entryId(entry) {
   return entry.Id;
@@ -82,7 +81,7 @@ Queue.prototype.send = function(messages) {
 
   let invalidMsgs = validateMessages(messages);
   if (invalidMsgs.length > 0) {
-    let indexes = _.pluck(invalidMsgs, "index").join(", ");
+    let indexes = invalidMsgs.map((m) => m.index).join(", ");
     throw new Error(`invalid messages at indexes ${indexes}`);
   }
   function resolver(resolve, reject) {
