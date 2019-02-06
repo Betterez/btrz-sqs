@@ -34,6 +34,7 @@
     "chai": "latest",
     "chance": "0.7.1",
     "mocha": "latest",
-    "sinon": "latest"
+    "sinon": "latest",
+    "lodash": "latest"
   }
 }
