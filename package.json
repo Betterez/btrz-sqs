@@ -4,9 +4,8 @@
   "description": "Betterez simple client to send messages to an AWS SQS queue with a very convenient interface",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test multi='xunit=test-results/xunit.xml spec=-' node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- --ui bdd -R mocha-multi -t 5000",
-    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w",
-    "publish": "publish"
+    "test": "NODE_ENV=test node_modules/mocha/bin/_mocha --ui bdd -R mocha-multi -t 5000",
+    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w"
   },
   "repository": {
     "type": "git",
@@ -34,11 +33,7 @@
   "devDependencies": {
     "chai": "latest",
     "chance": "0.7.1",
-    "istanbul": "^0.4.1",
     "mocha": "latest",
-    "mocha-multi": "latest",
-    "publish": "^0.5.0",
-    "sinon": "latest",
-    "xunit-file": "latest"
+    "sinon": "latest"
   }
 }

@@ -1,4 +1,5 @@
-# btrz-sqs [![Circle CI](https://circleci.com/gh/Betterez/btrz-sqs.svg?style=svg)](https://circleci.com/gh/Betterez/btrz-sqs) [![NPM version](https://badge-me.herokuapp.com/api/npm/btrz-sqs.png)](http://badges.enytc.com/for/npm/btrz-sqs)
+# btrz-sqs 
+
 A simple client to send messages to an AWS SQS queue with a very convenient interface.
 
 It uses native Promises
