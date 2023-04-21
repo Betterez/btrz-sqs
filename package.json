@@ -28,11 +28,11 @@
   },
   "homepage": "https://github.com/Betterez/btrz-sqs",
   "dependencies": {
-    "aws-sdk": "^2.1.7"
+    "@aws-sdk/client-sqs": "^3.31.0"
   },
   "devDependencies": {
     "chai": "latest",
-    "chance": "0.7.1",
+    "chance": "1.1.11",
     "mocha": "latest",
     "sinon": "latest",
     "lodash": "latest"

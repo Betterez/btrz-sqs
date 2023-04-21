@@ -70,7 +70,7 @@ describe("Queue", function () {
       expect(sut).to.throw("invalid messages at indexes 1, 3");
     });
 
-    it("should processed more than 10 messages (SQS limit)", function (done) {
+    it("should process more than 10 messages (SQS limit)", function (done) {
 
       let messages = _.range(25).map(function (id) {
         return Queue.createMessage(id, `content for ${id}`);
@@ -85,6 +85,18 @@ describe("Queue", function () {
         });
       } else {
         done();
+      }
+    });
+
+    it("should read messages", async () => {
+      if (config.key) {
+        let msg = Queue.createMessage("amsg", "a message body");
+        const result = await queue.send([msg]);
+        const receive = await queue.get();
+        expect(receive.Messages.length).to.be.eql(1);
+        return receive;
+      } else {
+        return Promise.resolve();
       }
     });
   });

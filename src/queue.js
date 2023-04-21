@@ -1,6 +1,6 @@
 "use strict";
-const BATCH_SIZE = 10,
-  AWS = require("aws-sdk");
+const BATCH_SIZE = 10;
+const AWS = require("@aws-sdk/client-sqs");
 
 function entryId(entry) {
   return entry.Id;
@@ -14,7 +14,7 @@ function createError(failedMessages) {
 }
 
 function isValidMsg(msg, index) {
-  if (msg.Id && msg.MessageBody && msg.Id.indexOf(" ") === -1) {
+  if (msg.Id && msg.MessageBody && msg.Id.indexOf(" ") === -1) { 
     return "";
   } else {
     return {index: index, msg: msg};
@@ -29,51 +29,44 @@ function validateMessages(messages) {
       });
 }
 
-function recursiveSend(failedMessages, messages, queueUrl, sqs, cb) {
+async function recursiveSend(failedMessages, messages, queueUrl, sqs) {
   let params = {
     Entries: messages.splice(0, BATCH_SIZE),
     QueueUrl: queueUrl
   };
-
   if (params.Entries.length > 0) {
-    sqs.sendMessageBatch(params, function (err, result) {
-      if (err) {
-        return cb(err);
-      }
-      failedMessages = failedMessages.concat(result.Failed.map(entryId));
-      recursiveSend(failedMessages, messages, queueUrl, sqs, cb);
-    });
+    try {
+      const result = await sqs.sendMessageBatch(params);
+      failedMessages = failedMessages.concat((result.Failed || []).map(entryId));
+      recursiveSend(failedMessages, messages, queueUrl, sqs);
+    } catch(err) {
+      throw err;
+    }
   } else {
-      return cb(null, failedMessages);
+    return Promise.resolve(failedMessages);
   }
 }
 
 function Queue(config, queueName) {
-
   this.awsConfig = config;
   this.queueConfig = config.sqs[queueName];
   this.sqs = new AWS.SQS({
-      accessKeyId: this.awsConfig.key,
-      secretAccessKey: this.awsConfig.secret,
+      credentials: {
+        accessKeyId: this.awsConfig.key,
+        secretAccessKey: this.awsConfig.secret,
+      },
       region: this.queueConfig.region
     });
 }
 
 Queue.prototype.get = function () {
   let self = this;
-  function resolver(resolve, reject) {
-    self.sqs.receiveMessage({ QueueUrl: self.queueConfig.queueUrl }, (err, results) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(results);
-    })
-  }
-  return new Promise(resolver);
+  return self.sqs.receiveMessage({ QueueUrl: self.queueConfig.queueUrl });
 };
 
 Queue.prototype.send = function(messages) {
   let self = this;
+  let failures = [];
 
   if (!Array.isArray(messages)) {
     throw new Error("messages should be an array of Queue.messages");
@@ -84,20 +77,17 @@ Queue.prototype.send = function(messages) {
     let indexes = invalidMsgs.map((m) => m.index).join(", ");
     throw new Error(`invalid messages at indexes ${indexes}`);
   }
-  function resolver(resolve, reject) {
 
-    recursiveSend([], messages, self.queueConfig.queueUrl, self.sqs, function (err, failures) {
-      if (err) {
-        return reject(err);
-      }
-      if (failures.length > 0) {
-        reject(createError(failures));
-      } else {
-        resolve(true);
-      }
-    });
+  try {
+    failures = recursiveSend([], messages, self.queueConfig.queueUrl, self.sqs);
+  } catch (err) {
+    return Promise.reject(err);
   }
-  return new Promise(resolver);
+
+  if (failures.length > 0) {
+    return Promise.reject(createError(failures));
+  }
+  return Promise.resolve(true);
 };
 
 Queue.createMessage = function (id, message) {
