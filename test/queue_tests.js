@@ -1,7 +1,4 @@
-"use strict";
-
 describe("Queue", function () {
-
   let Queue = require("../src/queue").Queue,
     expect = require("chai").expect,
     Chance = require("chance").Chance,

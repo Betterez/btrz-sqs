@@ -98,3 +98,4 @@ Queue.createMessage = function (id, message) {
 };
 
 exports.Queue = Queue;
+exports.SQSWorker = require("./worker.js");
