@@ -1,6 +1,6 @@
 {
   "name": "btrz-sqs",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Betterez simple client to send messages to an AWS SQS queue with a very convenient interface",
   "main": "index.js",
   "scripts": {
