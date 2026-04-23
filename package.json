@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test node --test test/*_tests.js",
     "test-w": "NODE_ENV=test node --test --watch test/*_tests.js",
     "preversion": "npm test",
-    "postversion": "git push origin main && git push --tags"
+    "postversion": "git push origin master && git push --tags"
   },
   "repository": {
     "type": "git",
