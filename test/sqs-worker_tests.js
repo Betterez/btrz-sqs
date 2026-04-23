@@ -1,10 +1,8 @@
+const {describe, it} = require("node:test");
+const SQSWorker = require("../index.js").SQSWorker;
+const Queue = require("../index.js").Queue;
+
 describe("Worker", function () {
-  let SQSWorker = require("../index.js").SQSWorker;
-  let Queue = require("../index.js").Queue;
-  const expect = require("chai").expect;
-  const Chance = require("chance").Chance;
-  const chance = new Chance();
-  const _ = require("lodash");
   const options = {
     url: process.env.AWS_SQS_URL,
     region: "us-east-1",

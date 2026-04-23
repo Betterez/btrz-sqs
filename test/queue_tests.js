@@ -1,10 +1,9 @@
+const {beforeEach, describe, it} = require("node:test");
+const assert = require("node:assert/strict");
+const {Queue} = require("../src/queue");
+
 describe("Queue", function () {
-  let Queue = require("../src/queue").Queue,
-    expect = require("chai").expect,
-    Chance = require("chance").Chance,
-    chance = new Chance(),
-    _ = require("lodash"),
-    config =  {
+  let config =  {
       key: process.env.AWS_KEY,
       secret: process.env.AWS_SECRET,
       sqs: {
@@ -15,6 +14,12 @@ describe("Queue", function () {
       }
     };
 
+  function createRange(size) {
+    return Array.from({length: size}, function (_, index) {
+      return index;
+    });
+  }
+
   let queue;
   beforeEach(function () {
     queue = new Queue(config, "dataImport");
@@ -22,23 +27,19 @@ describe("Queue", function () {
 
   describe("createMessage(id, message)", function () {
     it ("should serialize objects for the body", function () {
-      let obj = {name: chance.word(), email: chance.email()};
+      let obj = {name: "hjkhasdASFDASD123", email: "hjkhasdASFDASD123@example.com"};
       let msg = Queue.createMessage("id", obj);
-      expect(msg.MessageBody).to.be.eql(JSON.stringify(obj));
+      assert.deepStrictEqual(msg.MessageBody, JSON.stringify(obj));
     });
   });
 
   describe("send([])", function () {
 
-    it("should send a message", function (done) {
+    it("should send a message", async function () {
       if (config.key) {
         let msg = Queue.createMessage("amsg", "a message body");
-        queue.send([msg]).then(function (result) {
-          expect(result).to.be.true;
-          done();
-        });
-      } else {
-        done();
+        const result = await queue.send([msg]);
+        assert.strictEqual(result, true);
       }
     });
 
@@ -46,7 +47,7 @@ describe("Queue", function () {
       function sut() {
         queue.send("");
       }
-      expect(sut).to.throw("messages should be an array of Queue.messages");
+      assert.throws(sut, new Error("messages should be an array of Queue.messages"));
     });
 
     it("should throw if any of the messages is not a valid message", function () {
@@ -54,7 +55,7 @@ describe("Queue", function () {
         let msg = Queue.createMessage("id", "content");
         queue.send([msg, "invalid msg"]);
       }
-      expect(sut).to.throw("invalid messages at indexes 1");
+      assert.throws(sut, new Error("invalid messages at indexes 1"));
     });
 
     it("should throw if any message id is invalid", function () {
@@ -64,33 +65,27 @@ describe("Queue", function () {
         invalid.Id = "invalid id";
         queue.send([msg, "invalid msg", msg, invalid]);
       }
-      expect(sut).to.throw("invalid messages at indexes 1, 3");
+      assert.throws(sut, new Error("invalid messages at indexes 1, 3"));
     });
 
-    it("should process more than 10 messages (SQS limit)", function (done) {
+    it("should process more than 10 messages (SQS limit)", async function () {
 
-      let messages = _.range(25).map(function (id) {
+      let messages = createRange(25).map(function (id) {
         return Queue.createMessage(id, `content for ${id}`);
       });
 
       if (config.key) {
-        queue.send(messages).then(function (result) {
-          expect(result).to.be.true;
-          done();
-        }, function (err) {
-          done(err);
-        });
-      } else {
-        done();
+        const result = await queue.send(messages);
+        assert.strictEqual(result, true);
       }
     });
 
     it("should read messages", async () => {
       if (config.key) {
         let msg = Queue.createMessage("amsg", "a message body");
-        const result = await queue.send([msg]);
+        await queue.send([msg]);
         const receive = await queue.get();
-        expect(receive.Messages.length).to.be.eql(1);
+        assert.deepStrictEqual(receive.Messages.length, 1);
         return receive;
       } else {
         return Promise.resolve();

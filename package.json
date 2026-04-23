@@ -4,8 +4,10 @@
   "description": "Betterez simple client to send messages to an AWS SQS queue with a very convenient interface",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test node_modules/mocha/bin/_mocha --ui bdd -t 500000",
-    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w"
+    "test": "NODE_ENV=test node --test test/*_tests.js",
+    "test-w": "NODE_ENV=test node --test --watch test/*_tests.js",
+    "preversion": "npm test",
+    "postversion": "git push origin main && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -28,13 +30,8 @@
   },
   "homepage": "https://github.com/Betterez/btrz-sqs",
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.31.0"
+    "@aws-sdk/client-sqs": "^3.1036.0"
   },
   "devDependencies": {
-    "chai": "latest",
-    "chance": "1.1.11",
-    "lodash": "latest",
-    "mocha": "latest",
-    "sinon": "latest"
   }
 }
