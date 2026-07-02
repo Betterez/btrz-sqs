@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/Betterez/btrz-sqs",
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1036.0"
+    "@aws-sdk/client-sqs": "3.1079.0"
   },
   "devDependencies": {}
 }
